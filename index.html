@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>我的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="这是我的个人博客，用来记录生活与技术笔记。" />
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --bg-card: #ffffff;
+      --text: #1f2933;
+      --text-muted: #6b7280;
+      --primary: #2563eb;
+      --primary-soft: rgba(37, 99, 235, 0.08);
+      --border: #e5e7eb;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.07);
+      --shadow-chip: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0edff 0, #f5f5f7 40%, #f2f2f3 100%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    /* 顶部导航 */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 18px;
+      color: #111827;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: conic-gradient(
+        from 180deg,
+        #2563eb,
+        #a855f7,
+        #ec4899,
+        #f97316,
+        #22c55e,
+        #2563eb
+      );
+      position: relative;
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+    }
+
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 20%, #ffffff, #dbeafe);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .nav-links a {
+      padding: 6px 10px;
+      border-radius: 999px;
+      transition: background 0.16s ease, color 0.16s ease, transform 0.08s ease;
+    }
+
+    .nav-links a:hover {
+      background: rgba(15, 23, 42, 0.04);
+      color: #111827;
+      transform: translateY(-1px);
+    }
+
+    .nav-links .primary {
+      background: #111827;
+      color: #f9fafb;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.4);
+    }
+
+    .nav-links .primary:hover {
+      background: #000000;
+    }
+
+    /* 头部简介区 */
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 880px) {
+      .hero-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      padding: 26px 26px 24px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      backdrop-filter: blur(22px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.09), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(236, 72, 153, 0.1), transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.04);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.2);
+    }
+
+    .hero-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.04);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: var(--shadow-chip);
+      backdrop-filter: blur(12px);
+    }
+
+    .chip-strong {
+      color: #111827;
+      border-color: rgba(15, 23, 42, 0.18);
+      background: rgba(248, 250, 252, 0.96);
+    }
+
+    .hero-title {
+      font-size: 30px;
+      line-height: 1.18;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+      color: #020617;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      max-width: 520px;
+    }
+
+    .hero-subtitle span {
+      color: #111827;
+      font-weight: 500;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .hero-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-meta-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.18);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 13px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.1s ease, box-shadow 0.12s ease, background 0.2s ease,
+        border-color 0.2s ease, color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #f9fafb;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 42px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-ghost {
+      background: rgba(248, 250, 252, 0.85);
+      border-color: rgba(148, 163, 184, 0.7);
+      color: #111827;
+    }
+
+    .btn-ghost:hover {
+      background: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
+    }
+
+    .btn-icon {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    .hero-footer-note {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* 右侧卡片（侧边栏） */
+    .side-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 22px;
+      padding: 20px 18px 18px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      backdrop-filter: blur(22px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .side-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .side-about {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .side-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.8);
+      color: #4b5563;
+      background: rgba(248, 250, 252, 0.96);
+    }
+
+    .side-footer {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .side-footer a {
+      color: var(--primary);
+      border-bottom: 1px dotted rgba(37, 99, 235, 0.5);
+    }
+
+    /* 文章列表 */
+    .content-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 1.6fr);
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 880px) {
+      .content-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .list-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 22px;
+      padding: 20px 20px 18px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      backdrop-filter: blur(18px);
+    }
+
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+
+    .list-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #020617;
+    }
+
+    .list-filter {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.03);
+    }
+
+    .list-filter span {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.06);
+      color: #111827;
+    }
+
+    .post-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .post-item {
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      padding: 10px 12px;
+      background: linear-gradient(
+        135deg,
+        rgba(248, 250, 252, 0.98),
+        rgba(249, 250, 251, 0.98)
+      );
+      transition: box-shadow 0.14s ease, transform 0.08s ease,
+        border-color 0.16s ease, background 0.16s ease;
+      cursor: pointer;
+    }
+
+    .post-item:hover {
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+      border-color: rgba(148, 163, 184, 0.85);
+      background: #ffffff;
+    }
+
+    .post-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .post-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .post-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .post-meta-badge {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.08);
+      color: #1d4ed8;
+      font-weight: 500;
+    }
+
+    .post-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .post-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .post-tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.03);
+    }
+
+    .post-tag.primary-tag {
+      background: var(--primary-soft);
+      color: #1d4ed8;
+    }
+
+    /* 右侧小卡片 */
+    .mini-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      margin-bottom: 12px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+    }
+
+    .mini-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #020617;
+    }
+
+    .mini-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .mini-list {
+      list-style: none;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mini-list li span {
+      color: #111827;
+    }
+
+    /* 页脚 */
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 12px 20px 24px;
+      margin-top: auto;
+    }
+
+    .footer a {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="wrapper">
+      <!-- 导航 -->
+      <header class="nav">
+        <div class="logo">
+          <div class="logo-mark"></div>
+          <span>我的个人博客</span>
+        </div>
+        <nav class="nav-links">
+          <a href="#posts">文章</a>
+          <a href="#about">关于</a>
+          <a href="#contact" class="primary">联系我</a>
+        </nav>
+      </header>
+
+      <!-- 头部简介 + 侧边 -->
+      <section class="hero-layout">
+        <article class="hero-card">
+          <div class="hero-inner">
+            <div class="hero-tag-row">
+              <div class="badge">
+                <span class="badge-dot"></span>
+                正在记录 · 生活 & 技术
+              </div>
+              <div class="hero-chip-row">
+                <span class="chip chip-strong">写给未来的自己</span>
+                <span class="chip">记录 · 思考 · 构建</span>
+              </div>
+            </div>
+
+            <h1 class="hero-title">你好，我是你的名字</h1>
+            <p class="hero-subtitle">
+              一名 <span>开发者 / 创作者 / 终身学习者</span>。
+              这里是我的个人博客，用来记录技术笔记、灵感片段和生活中的小发现。
+            </p>
+
+            <div class="hero-meta">
+              <div class="hero-meta-item">
+                最新更新 · <strong>2026</strong>
+              </div>
+              <div class="hero-meta-item">
+                <span class="hero-meta-dot"></span>
+                写字 · 编程 · 思考
+              </div>
+              <div class="hero-meta-item">
+                <span class="hero-meta-dot"></span>
+                简单，但用心
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="document.getElementById('posts').scrollIntoView({behavior:'smooth'})">
+                浏览最新文章
+                <span class="btn-icon">↗</span>
+              </button>
+              <button class="btn btn-ghost" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+                了解我一点
+              </button>
+            </div>
+
+            <p class="hero-footer-note">
+              小目标：每周至少写一篇，让博客慢慢长成一片小森林。
+            </p>
+          </div>
+        </article>
+
+        <aside class="side-card" id="about">
+          <div>
+            <div class="side-section-title">About</div>
+            <p class="side-about">
+              这里可以写一段简短自我介绍：你是谁、在做什么、目前关注哪些方向。
+              用几句话，让第一次来到这里的人对你有大概的印象。
+            </p>
+          </div>
+
+          <div>
+            <div class="side-section-title">Focus</div>
+            <div class="side-tags">
+              <span class="tag">前端开发</span>
+              <span class="tag">后端实践</span>
+              <span class="tag">效率工具</span>
+              <span class="tag">阅读与思考</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="side-section-title">Contact</div>
+            <p class="side-about" id="contact">
+              你可以在这里放上邮箱、GitHub、知乎、微博等链接，例如：
+              <br />
+              Email: <strong>you@example.com</strong><br />
+              GitHub: <strong>@your-github</strong>
+            </p>
+          </div>
+
+          <p class="side-footer">
+            之后你可以把这份单文件拆分成真正的博客系统（静态生成 / 后端渲染 / Notion 同步等），
+            也可以就这样保持“纯文本 + 简约设计”的质感。
+          </p>
+        </aside>
+      </section>
+
+      <!-- 内容区 -->
+      <main class="content-layout" id="posts">
+        <!-- 文章列表 -->
+        <section class="list-card">
+          <header class="list-header">
+            <h2 class="list-title">最新文章</h2>
+            <div class="list-filter">
+              按时间排序
+              <span>最近 · 置顶优先</span>
+            </div>
+          </header>
+
+          <ul class="post-list">
+            <li class="post-item">
+              <div class="post-top-row">
+                <h3 class="post-title">
+                    <a href="post-hello-world.html">
+                      从零开始搭建个人博客：我为什么还在写博客
+                    </a>
+                </h3>
+                <div class="post-meta">
+                  <span>2026-02-27</span>
+                  <span>·</span>
+                  <span>阅读约 4 分钟</span>
+                  <span class="post-meta-badge">置顶</span>
+                </div>
+              </div>
+              <p class="post-desc">
+                工具在变，平台在变，但属于自己的“小宇宙”仍然重要。写下这第一篇文章，
+                记录我重新开始写博客的原因与期望。
+              </p>
+              <div class="post-tags">
+                <span class="post-tag primary-tag">博客搭建</span>
+                <span class="post-tag">个人成长</span>
+                <span class="post-tag">折腾记录</span>
+              </div>
+            </li>
+
+            <li class="post-item">
+              <div class="post-top-row">
+                <h3 class="post-title">2026 年，我想坚持的几件小事</h3>
+                <div class="post-meta">
+                  <span>2026-01-10</span>
+                  <span>·</span>
+                  <span>阅读约 3 分钟</span>
+                </div>
+              </div>
+              <p class="post-desc">
+                不是宏大目标，而是一些细小但真实的习惯：多读一点书、多写一点字、
+                多留一点时间给自己。
+              </p>
+              <div class="post-tags">
+                <span class="post-tag primary-tag">年度计划</span>
+                <span class="post-tag">生活方式</span>
+              </div>
+            </li>
+
+            <li class="post-item">
+              <div class="post-top-row">
+                <h3 class="post-title">一些正在尝试的技术栈与工具</h3>
+                <div class="post-meta">
+                  <span>2025-12-30</span>
+                  <span>·</span>
+                  <span>阅读约 5 分钟</span>
+                </div>
+              </div>
+              <p class="post-desc">
+                记录最近在折腾的技术：前端框架、后端服务、自动化脚本，以及它们如何融入
+                我的日常工作流。
+              </p>
+              <div class="post-tags">
+                <span class="post-tag primary-tag">技术</span>
+                <span class="post-tag">效率</span>
+                <span class="post-tag">工具箱</span>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- 右侧小卡片区域 -->
+        <aside>
+          <div class="mini-card">
+            <div class="mini-title">写作提示</div>
+            <p class="mini-sub">
+              可以把博客当作“第二大脑”的入口：所有零散想法、阅读摘录、代码片段，都可以先丢到这里。
+            </p>
+            <ul class="mini-list">
+              <li><span>短</span> 也没关系，先写下来再说。</li>
+              <li><span>真</span> 比“完美”更重要。</li>
+              <li><span>慢</span> 也可以成为一种节奏。</li>
+            </ul>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-title">未来功能想法</div>
+            <p class="mini-sub">
+              当你有时间时，可以把下面这些点慢慢加进去：
+            </p>
+            <ul class="mini-list">
+              <li>· 支持从 Markdown 文件自动生成文章列表</li>
+              <li>· 加上深色模式切换</li>
+              <li>· 文章全文页、标签页、归档页</li>
+              <li>· 简单的评论系统（或仅自己可见的笔记）</li>
+            </ul>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <footer class="footer">
+      © <span id="year"></span> 你的名字 · 保留部分权利。
+      使用纯 HTML + CSS 手工打造。
+    </footer>
+  </div>
+
+  <script>
+    // 自动填充年份
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
