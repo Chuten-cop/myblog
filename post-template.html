@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{TITLE}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="{{SUMMARY}}" />
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --bg-card: #ffffff;
+      --text: #1f2933;
+      --text-muted: #6b7280;
+      --primary: #2563eb;
+      --primary-soft: rgba(37, 99, 235, 0.08);
+      --border: #e5e7eb;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.07);
+      --shadow-chip: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0edff 0, #f5f5f7 40%, #f2f2f3 100%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    /* 顶部导航（和首页一样） */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 18px;
+      color: #111827;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: conic-gradient(
+        from 180deg,
+        #2563eb,
+        #a855f7,
+        #ec4899,
+        #f97316,
+        #22c55e,
+        #2563eb
+      );
+      position: relative;
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+    }
+
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 20%, #ffffff, #dbeafe);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .nav-links a {
+      padding: 6px 10px;
+      border-radius: 999px;
+      transition: background 0.16s ease, color 0.16s ease, transform 0.08s ease;
+    }
+
+    .nav-links a:hover {
+      background: rgba(15, 23, 42, 0.04);
+      color: #111827;
+      transform: translateY(-1px);
+    }
+
+    .nav-links .primary {
+      background: #111827;
+      color: #f9fafb;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.4);
+    }
+
+    /* 文章容器 */
+    .article-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 24px;
+      padding: 24px 22px 26px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      backdrop-filter: blur(18px);
+    }
+
+    .article-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.04);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.2);
+    }
+
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .article-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .article-title {
+      font-size: 26px;
+      line-height: 1.22;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: #020617;
+      margin-bottom: 8px;
+    }
+
+    .article-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.8);
+      color: #4b5563;
+      background: rgba(248, 250, 252, 0.96);
+    }
+
+    .tag-primary {
+      border-style: solid;
+      border-color: rgba(37, 99, 235, 0.6);
+      color: #1d4ed8;
+      background: var(--primary-soft);
+    }
+
+    .article-body {
+      font-size: 14px;
+      color: #111827;
+      line-height: 1.8;
+      border-top: 1px dashed rgba(226, 232, 240, 0.9);
+      margin-top: 12px;
+      padding-top: 18px;
+    }
+
+    .article-body p {
+      margin-bottom: 12px;
+    }
+
+    .article-body h2 {
+      font-size: 18px;
+      margin: 18px 0 8px;
+    }
+
+    .article-body ul {
+      padding-left: 18px;
+      margin-bottom: 12px;
+    }
+
+    .article-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.03);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      cursor: pointer;
+      transition: background 0.16s ease, transform 0.08s ease, box-shadow 0.12s ease;
+    }
+
+    .back-link:hover {
+      background: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 12px 20px 24px;
+      margin-top: auto;
+    }
+
+    .footer a {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="wrapper">
+      <!-- 导航，与首页保持一致 -->
+      <header class="nav">
+        <div class="logo">
+          <div class="logo-mark"></div>
+          <span>我的个人博客</span>
+        </div>
+        <nav class="nav-links">
+          <a href="index.html#posts">文章</a>
+          <a href="index.html#about">关于</a>
+          <a href="index.html#contact" class="primary">联系我</a>
+        </nav>
+      </header>
+
+      <!-- 单篇文章内容 -->
+      <main class="article-card">
+        <div class="article-badge-row">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            Blog · 正在阅读
+          </div>
+          <div class="article-meta">
+            <span>{{DATE}}</span>
+            <span>·</span>
+            <span>{{READING_TIME}}</span>
+          </div>
+        </div>
+
+        <h1 class="article-title">{{TITLE}}</h1>
+        <p class="article-subtitle">
+          {{SUMMARY}}
+        </p>
+
+        <div class="article-tags">
+          {{TAGS_HTML}}
+        </div>
+
+        <article class="article-body">
+          {{CONTENT}}
+        </article>
+
+        <div class="article-footer">
+          <button class="back-link" onclick="window.location.href='index.html#posts'">
+            <span>←</span>
+            <span>返回首页 · 最新文章</span>
+          </button>
+          <span>写于 {{DATE}} · 保持好奇，持续记录。</span>
+        </div>
+      </main>
+    </div>
+
+    <footer class="footer">
+      © <span id="year"></span> 你的名字 · 保留部分权利。
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
